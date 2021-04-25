@@ -1,0 +1,75 @@
+.carousel .carousel-inner {
+    max-height: 50vh;
+}
+
+.carousel-inner img {
+    width: 100%;
+}
+
+.item-price {
+    font-family: Roboto, serif;
+    font-size: 18px;
+}
+
+.quantity-box .quantity-input {
+    width: 30px;
+    border: 1px solid #e1e8ec;
+    text-align: center;
+}
+
+body {
+    background: #dcdcdc;
+}
+
+.sidebar {
+    background: white;
+}
+
+.card {
+    background: white;
+}
+
+.category-link-btn:hover {
+    background-color: rgba(25, 135, 84, 0.4);
+}
+
+.content-section {
+    background: white;
+}
+
+.card-img-overlay:hover {
+    background-color: rgb(25, 135, 84);
+    opacity: 40%;
+}
+
+.cart-table-text {
+    font-size: 18px;
+}
+
+.text-18 {
+    font-size: 18px;
+}
+
+.text-20 {
+    font-size: 20px;
+}
+
+.btn-img {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+}
+
+.btn-img img {
+    display: block;
+}
+
+.btn-img:hover .img-wrap {
+    background-color: rgb(25, 135, 84);
+}
+
+.btn-img:hover img {
+    opacity: 0.6;
+}

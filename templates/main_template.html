@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block top %}
+    <div class="d-flex flex-row justify-content-center m-4 d-md-none">
+        <div class="flex-fill container">
+            <button class="btn btn-outline-dark collapse-toggle
+                 d-inline-flex w-100
+                 align-items-center collapsed"
+                    data-bs-toggle="collapse" aria-expanded="false"
+                    data-bs-target="#contents-collapse"
+                    aria-controls="contents-collapse">
+                Каталог
+                <i class="fa fa-caret-down ms-auto"></i>
+            </button>
+            <ul class="list-group list-group-flush collapse categories-list" id="contents-collapse">
+                {% for categ in categories %}
+                    <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                        <a href="{{ url_for('goods_in_category', categ_id=categ.id) }}"
+                           class="flex-fill text-decoration-none text-dark">
+                            <span style="font-size: 20px">{{ categ.name }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+                <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                    <a href="{{ url_for('all_goods_page') }}"
+                       class="flex-fill text-decoration-none text-dark">
+                        <span style="font-size: 20px">Все товары</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock top %}
+{% block sidebar %}
+    <button type="button"
+            class="btn btn-outline-dark d-none d-md-block sticky-top"
+            style="width: 35px; height: 35px; z-index: 1"
+            id="open-sidebar-categories"
+            aria-label="Open Sidebar">
+        <i class="fa fa-bars"></i>
+    </button>
+    <div class="col collapse" id="sidebar-categories" style="max-width: 25%">
+        <div class="pt-2 sticky-top">
+            <div class="content-section sidebar
+             border border-secondary rounded
+              p-3 d-none d-md-block"
+                 id="sidebar-categories">
+                <div class="d-flex flex-row justify-content-between">
+                    <span class="h4 p-2">Навигация по сайту</span>
+                    <button type="button"
+                            class="btn-close pull-right"
+                            id="close-sidebar-categories"
+                            aria-label="Close Sidebar">
+                    </button>
+                </div>
+                <p class='h5 text-secondary mt-3'>Каталог:</p>
+                <ul class="list-group mt-2 categories-list">
+                    {% for categ in categories %}
+                        <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                            <a href="{{ url_for('goods_in_category', categ_id=categ.id) }}"
+                               class="flex-fill text-decoration-none text-dark">
+                                <span style="font-size: 20px">{{ categ.name }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                    <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                        <a href="{{ url_for('all_goods_page') }}"
+                           class="flex-fill text-decoration-none text-dark">
+                            <span style="font-size: 20px">Все товары</span>
+                        </a>
+                    </li>
+                </ul>
+                <p class='h5 text-secondary mt-4'>Разделы сайта:</p>
+                <ul class="list-group mt-2">
+                    <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                        <a href="{{ url_for('index_page') }}"
+                           class="flex-fill text-decoration-none text-dark">
+                            <span style="font-size: 20px">Главная</span>
+                        </a>
+                    </li>
+                    <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                        <a href="{{ url_for('categories_page') }}"
+                           class="flex-fill text-decoration-none text-dark">
+                            <span style="font-size: 20px">Каталог</span>
+                        </a>
+                    </li>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                        <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                        <a href="{{ url_for('goods_add_page') }}"
+                           class="flex-fill text-decoration-none text-dark">
+                            <span style="font-size: 20px">Добавить товар</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock sidebar %}

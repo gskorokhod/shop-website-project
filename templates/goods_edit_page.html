@@ -1,0 +1,204 @@
+{% extends "main_template.html" %}
+{% block content %}
+    <div class="container">
+        <form class="goods-add-form" method="post" enctype="multipart/form-data">
+            <div class="content-section p-3 rounded shadow-sm mt-3">
+                <div class="row row-cols-1 row-cols-md-2 ms-2 me-2">
+                    <div class="col-md-6">
+                        {% set goods_img = url_for('static', filename=goods.img_file_path) if goods else 'https://via.placeholder.com/400' %}
+                        {% set goods_name = goods.name if goods else '' %}
+                        {% set goods_price = goods.price if goods else '' %}
+                        {% set goods_desc = goods.description if goods else '' %}
+                        {% set goods_amt = goods.amount if goods else '' %}
+                        {% set goods_bp = goods.gives_bonus_points if goods else '' %}
+                        {% set goods_categ = goods.categories if goods else [] %}
+                        {% set goods_charact = goods.characteristics if goods else [] %}
+
+                        <img src="{{ goods_img }}"
+                             alt="goods image"
+                             class="img-fluid mb-4 mb-md-2">
+                    </div>
+                    <div class="col-md-6 ps-4">
+                        <div class="header-form">
+                            <fieldset>
+                                <legend>Информация о товаре</legend>
+                                <div class="mb-3">
+                                    <label for="nameInput" class="form-label">Название</label>
+                                    {% if 'name' in errors.keys() %}
+                                        <input type="text" name="goodsName" id="nameInput"
+                                               class="form-control is-invalid"
+                                               value="{{ goods_name }}"
+                                               placeholder="Введите значение">
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in errors['name'] %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <input type="text" name="goodsName" id="nameInput" class="form-control"
+                                               placeholder="Введите значение"
+                                               value="{{ goods_name }}">
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descriptionInput" class="form-label">Описание</label>
+                                    <textarea name="description" id="descriptionInput" class="form-control"
+                                              placeholder="Введите значение">{{ goods_desc }}</textarea>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="form-label" for="customFile">Картинка</label>
+                                    {% if 'image' in errors.keys() %}
+                                        <input type="file" name="image" class="form-control is-invalid"
+                                               id="customFile"/>
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in errors['image'] %}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <input type="file" name="image" class="form-control" id="customFile"/>
+                                    {% endif %}
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-section p-3 rounded shadow-sm mt-3">
+                <h3 class="m-3">Основная информация</h3>
+                <fieldset class="p-3">
+                    <div class="mb-3">
+                        <label for="priceInput" class="form-label">Цена</label>
+                        {% if 'price' in errors.keys() %}
+                            <input type="text" name="price" id="priceInput" class="form-control is-invalid"
+                                   placeholder="Введите значение" value="{{ goods_price }}">
+                            <div class="invalid-feedback d-block">
+                                {% for error in errors['price'] %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <input type="text" name="price" id="priceInput" class="form-control"
+                                   placeholder="Введите значение" value="{{ goods_price }}">
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="amountInput" class="form-label">Количество на складе</label>
+                        {% if 'price' in errors.keys() %}
+                            <input type="text" name="amount" id="amountInput" class="form-control is-invalid"
+                                   placeholder="Введите значение" value="{{ goods_amt }}">
+                            <div class="invalid-feedback d-block">
+                                {% for error in errors['price'] %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <input type="text" name="amount" id="amountInput" class="form-control"
+                                   placeholder="Введите значение" value="{{ goods_amt }}">
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="bonus_pointsInput" class="form-label">Бонусные баллы за покупку</label>
+                        <input type="text" name="bonus_points" id="bonus_pointsInput" class="form-control"
+                               placeholder="Введите значение" value="{{ goods_bp }}" v>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="content-section p-3 rounded shadow-sm mt-4">
+                <h3 class="m-3">Категории</h3>
+                <div class="row row-cols-1 row-cols-md-2 ms-2 me-2 mt-4 pb-4 category-section">
+                    <div class="col-md-6 mb-4">
+                        <ul class="list-group categories-list">
+                            {% for categ_item in goods_categ %}
+                                <li class="list-group-item">
+                                    <div class="d-flex flex-row justify-content-between">
+                                        <span class="align-self-center">{{ categ_item.name }}</span>
+                                        <button type="button" class="btn btn-outline-danger item-list-delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    <input type="hidden" name="category[]" value="{{ categ_item.id }}">
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-5 ms-auto">
+                        <div class="category-form">
+                            <fieldset>
+                                <legend>Добавить категорию</legend>
+                                <div class="mb-3">
+                                    <label for="categSelect" class="form-label">Выберите категорию</label>
+                                    <select id="categSelect" name="categ" class="form-select">
+                                        {% for categ in categories %}
+                                            <option value="{{ categ.id }}">{{ categ.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-success category-add">Добавить</button>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-section p-3 rounded shadow-sm mt-4 characteristics-section">
+                <h3 class="m-3">Характеристики</h3>
+                <div class="row row-cols-1 row-cols-md-2 ms-2 me-2 mt-4 pb-4">
+                    <div class="col-md-6 mb-4">
+                        <table class="table table-bordered characteristics-table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Характеристика</th>
+                                <th scope="col">Значение</th>
+                                <th scope="col" class="text-center">Удалить</th>
+                            </tr>
+                            </thead>
+                            <tbody class="">
+                            {% for char_item in goods_charact %}
+                                <tr>
+                                    <td>{{ char_item.type.name }}</td>
+                                    <td>{{ char_item.value }}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger item-list-delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                    <input type="hidden" name="characteristic[]" value="{{char_item.type.id}}#{{char_item.value}}">
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-5 ms-auto">
+                        <div class="characteristics-form">
+                            <fieldset>
+                                <legend>Добавить характеристику</legend>
+                                <div class="mb-3">
+                                    <label for="charTypeSelect" class="form-label">Выберите характеристику</label>
+                                    <select id="charTypeSelect" name="charType" class="form-select">
+                                        {% for char_type in char_types %}
+                                            <option value="{{ char_type.id }}">{{ char_type.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="charValueInput" class="form-label">Введите значение</label>
+                                    <input type="text" name="charValue" id="charValueInput" class="form-control"
+                                           placeholder="Введите значение">
+                                </div>
+                                <button type="button" class="btn btn-success characteristic-add">Добавить</button>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 mb-4">
+                <button type="submit"
+                        class="btn btn-success btn-lg goods-add-form-submit">Создать / изменить товар
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/add_goods_v1132.js') }}"></script>
+{% endblock %}

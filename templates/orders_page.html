@@ -1,0 +1,63 @@
+{% extends "main_template.html" %}
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/orders_page_v13.css') }}">
+    <div class="container">
+        {% for order in orders.items %}
+            <article class="card rounded shadow-sm mb-4">
+                <header class="card-header">
+                    <h5>ID Заказа: {{ order.public_id }}</h5>
+                </header>
+                <div class="card-body">
+                    <div class="card-body row">
+                        <div class="col"><strong>Планируемое время доставки:</strong><br>
+                            {{ time_format_func(order.delivery_date, show_exact_time=False) }}
+                        </div>
+                        <!-- <div class="col"><strong>Shipping BY:</strong> <br> BLUEDART, | <i
+                                class="fa fa-phone"></i> +1598675986
+                        </div> -->
+                        <div class="col"><strong>Время создания:</strong><br>
+                            {{ time_format_func(order.created_date) }}
+                        </div>
+                        <div class="col"><strong>Статус:</strong><br>
+                            {{ order.status.full_name }}
+                        </div>
+                    </div>
+                    <div class="track">
+                        <div class="step {{ 'active' if order.status.id >= 1 else '' }}"><span class="icon"> <i
+                                class="fa fa-check"></i> </span> <span
+                                class="text"> Заказ принят </span></div>
+                        <div class="step {{ 'active' if order.status.id >= 2 else '' }}"><span class="icon"> <i
+                                class="fa fa-user"></i> </span> <span
+                                class="text"> Передан курьеру </span></div>
+                        <div class="step {{ 'active' if order.status.id >= 3 else '' }}"><span class="icon"> <i
+                                class="fa fa-truck"></i> </span> <span
+                                class="text"> В пути </span></div>
+                        <div class="step {{ 'active' if order.status.id >= 4 else '' }}"><span class="icon"> <i
+                                class="fa fa-box-open"></i> </span> <span
+                                class="text"> Доставлен </span></div>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+        <div class="mt-2 mb-2 p-2 border">
+            <p class="text-dark">Показано {{ orders.items|length }} из {{ orders.total }} заказов</p>
+            {% for page_num in orders.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if orders.page == page_num %}
+                        <a href="{{ url_for('orders_list_page', page=page_num) }}"
+                           class="btn btn-dark mt-1 mb-1 ms-2">
+                            {{ page_num }}
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('orders_list_page', page=page_num) }}"
+                           class="btn btn-outline-dark mt-1 mb-1 ms-2">
+                            {{ page_num }}
+                        </a>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

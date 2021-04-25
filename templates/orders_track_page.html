@@ -1,0 +1,21 @@
+{% extends "main_template.html" %}
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/orders_page_v13.css') }}">
+    <div class="container">
+        <h2>Отслеживание заказа</h2>
+        <form class="d-flex flex-row g-3 align-items-center">
+            <div class="flex-fill">
+                <label class="visually-hidden" for="searchOrderBox">ID Заказа</label>
+                <div class="input-group">
+                    <div class="input-group-text">@</div>
+                    <input type="text" class="form-control"
+                           name="public_id" id="searchOrderBox" placeholder="Order ID">
+                </div>
+            </div>
+
+            <div class="ms-4">
+                <button type="submit" class="btn btn-success">Поиск</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

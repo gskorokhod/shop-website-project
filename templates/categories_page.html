@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+    <nav aria-label="breadcrumb" class="">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index_page') }}">Главная</a></li>
+            <li class="breadcrumb-item active">Каталог</li>
+        </ol>
+    </nav>
+    <div class="container mt-2">
+        <h2 class="mb-4 text-center">Каталог</h2>
+        <div class="container content-section p-0 rounded">
+            <div class="row pe-4 ps-4 pt-2 pb-3">
+                <a href="{{ url_for('all_goods_page') }}" class="category-link-btn rounded
+                         flex-fill text-left
+                         text-decoration-none text-dark p-2">
+                    <span class="h4">Все товары</span>
+                </a>
+            </div>
+            <div class="accordion" id="accordionExample">
+                {% for categ in categories %}
+                    <div class="accordion-item">
+                        <div class="accordion-header d-flex flex-row justify-content-between p-2"
+                             id="heading{{ loop.index }}">
+                            <a href="{{ url_for('goods_in_category', categ_id=categ.id) }}" class="category-link-btn rounded
+                     flex-fill text-left
+                     text-decoration-none text-dark pt-2 ps-2">
+                                <span class="h4">{{ categ.name }}</span>
+                            </a>
+                            <button class="btn btn-success ms-4 collapse-toggle" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ loop.index }}">
+                                <i class="fa fa-caret-up fa-2x d-block"></i>
+                            </button>
+                        </div>
+                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse show"
+                             data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <ul class="list-group list-group-flush">
+                                    {% for subcategory in categ.children %}
+                                        <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                                            <a href="{{ url_for('goods_in_category', categ_id=subcategory.id) }}"
+                                               class="flex-fill text-decoration-none text-dark">
+                                                <span style="font-size: 20px">{{ subcategory.name }}</span>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

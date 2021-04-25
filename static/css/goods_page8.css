@@ -1,0 +1,30 @@
+.goods-description {
+    font-size: 18px;
+    font-family: Roboto, serif;
+}
+
+.list-group-item {
+    height: 50px;
+    font-size: 20px;
+}
+
+body {
+    background: #dcdcdc;
+}
+
+.goods-main-section {
+    background: white;
+}
+
+.btn_buy {
+    font-weight: normal;
+    font-size: 22px;
+}
+
+.quantity-box .quantity-input{
+    width: 40px;
+}
+
+.goods-buy-footer {
+    font-size: 18px;
+}

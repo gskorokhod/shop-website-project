@@ -1,0 +1,112 @@
+{% extends "main_template.html" %}
+
+{% block content %}
+    <nav aria-label="breadcrumb" class="">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index_page') }}">Главная</a></li>
+            <li class="breadcrumb-item active">Корзина</li>
+        </ol>
+    </nav>
+
+    <div class="container">
+        <form class="cart-form">
+            <div class="row row-cols-1 row-cols-lg-2">
+                <div class="col-lg-9 mb-4">
+                    <div class="card p-3 shadow-sm rounded">
+
+                        <table class="table align-middle table-borderless cart-table">
+                            <thead class="table-secondary">
+                            <tr>
+                                <th scope="col">Товар</th>
+                                <th scope="col">Цена</th>
+                                <th scope="col">Количество</th>
+                                <th scope="col">Удалить</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in cart_items %}
+                                {% set goods = item['goods'] %}
+                                {% set amount = item['amount'] %}
+                                <tr class="border-bottom">
+                                    <td>
+                                        <div class="d-flex flex-row p-1">
+                                            <a href="{{ url_for('goods_one_page', goods_id=goods.id) }}"
+                                               class="btn-img">
+                                                <div class="img-wrap rounded">
+                                                    <img src="{{ url_for('static', filename=goods.img_file_path) }}"
+                                                         width="100"
+                                                         height="100"
+                                                         alt="..."
+                                                         class="d-none d-sm-block rounded">
+                                                </div>
+                                            </a>
+                                            <div class="ms-3 d-flex flex-column justify-content-between">
+                                                <h4 class="mt-1">{{ goods.name }}</h4>
+                                                <div class="mb-1 d-none d-sm-block">
+                                                    {% set categ = goods.get_main_categ() %}
+                                                    <div class="mb-0">Категория:</div>
+                                                    <a href="{{ url_for('goods_in_category', categ_id=categ.id) }}">
+                                                        {{ categ.name }}</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                    <span class="cart-table-text">
+                                        <span class="cart-price">{{ goods.price }} </span>
+                                        <i class="fa fa-rouble"></i>
+                                    </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex quantity-box cart-table-text">
+                                            <input type="hidden" name="goods_id" value="{{ goods.id }}">
+                                            <input type="hidden" name="max_n_goods" value="{{ goods.amount }}">
+                                            <input type="button" class="quantity-controls quantity-minus cart-update" value="-">
+                                            <input type="text" class="quantity-input" name="amount"
+                                                   value="{{ amount }}">
+                                            <input type="button" class="quantity-controls quantity-plus cart-update" value="+">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-outline-danger cart-table-text cart-delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <div class="card p-2 shadow-sm rounded">
+                        <ul class="list-group">
+                            <li class="list-group-item cart-table-text">
+                                Итого
+                                <span class="badge bg-secondary pull-right cart-table-text">
+                                    <span class="cart-total">{{ price }}</span> <i class="fa fa-rouble"></i>
+                                </span>
+                            </li>
+                            <li class="list-group-item cart-table-text">
+                                Всего товаров
+                                <span class="badge bg-secondary pull-right cart-table-text">
+                                    <span class="cart-amount">{{ amount }}</span>
+                                </span>
+                            </li>
+                        </ul>
+                        <div class="row p-3 mt-4">
+                            <a href="{{ url_for('checkout_page') }}" class="btn btn-success">
+                                <span class="cart-table-text">Оформить заказ</span></a>
+                            <button class="btn btn-outline-danger mt-3 cart-table-text cart-clear">Очистить корзину</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- /.container -->
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/cart_v1142.js') }}"></script>
+{% endblock %}

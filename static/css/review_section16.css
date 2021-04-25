@@ -1,0 +1,43 @@
+.review-section {
+    background: #dcdcdc;
+}
+
+.graph-star-rating-header .star-rating {
+    font-size: 17px;
+}
+
+.progress {
+    background: #f2f4f8 none repeat scroll 0 0;
+    border-radius: 0;
+    height: 30px;
+}
+
+.rating-list {
+    display: inline-flex;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.rating-list-left {
+    line-height: 30px;
+    width: 10%;
+}
+
+.rating-list-center {
+    width: 80%;
+}
+
+.rating-list-right {
+    line-height: 30px;
+    text-align: right;
+    width: 10%;
+}
+
+.review-content {
+    font-size: 18px;
+}
+
+.stars-number {
+    font-size: 20px;
+    font-weight: bold;
+}

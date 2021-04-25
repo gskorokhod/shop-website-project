@@ -1,0 +1,125 @@
+{% extends "main_template.html" %}
+
+{% block content %}
+    <nav aria-label="breadcrumb" class="">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index_page') }}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('categories_page') }}">Каталог</a></li>
+            {% if category == 'all' %}
+                <li class="breadcrumb-item active">Все категории</li>
+            {% elif category %}
+                {% if category.parent_id %}
+                    <li class="breadcrumb-item"><a
+                            href="{{ url_for('goods_in_category', categ_id=category.parent.id) }}">
+                        {{ category.parent.name }}
+                    </a></li>
+                {% endif %}
+                <li class="breadcrumb-item active">{{ category.name }}</li>
+            {% endif %}
+        </ol>
+    </nav>
+
+    <div class="container mt-4">
+        {% if category == 'all' %}
+            <h2 class="text-center mb-4">Все товары</h2>
+        {% elif category %}
+            <h2 class="text-center mb-4">Товары в категории: {{ category.name }}</h2>
+            {% if category.children %}
+                <div class="d-flex flex-row justify-content-center mb-4">
+                    <div class="dropdown w-50">
+                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            Показать подкатегории
+                        </button>
+                        <ul class="dropdown-menu w-100 p-0" aria-labelledby="dropdownMenuButton1">
+                            {% for subcategory in category.children %}
+                                <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                                    <a href="{{ url_for('goods_in_category', categ_id=subcategory.id) }}"
+                                       class="flex-fill text-decoration-none text-dark">
+                                        <span style="font-size: 20px">{{ subcategory.name }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4">
+            {% for goods in goods_items.items %}
+                <div class="col mb-4">
+                    <div class="card">
+                        <a href="{{ url_for('goods_one_page', goods_id=goods.id) }}"
+                           class="btn-img">
+                            <div class="img-wrap rounded">
+                                <img src="{{ url_for('static', filename=goods.img_file_path) }}"
+                                     class="card-img-top" alt="...">
+                            </div>
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title mt-1">{{ goods.name }}</h5>
+
+                            <div class="border-bottom border-top p-2 mt-3 item-price">
+                                Цена:
+                                <span class="pull-right">
+                                {{ goods.price }} <i class="fa fa-rouble me-2"></i>
+                                </span>
+                            </div>
+
+                            <div class="mt-3">
+                                <form class="goods-buy-form">
+                                    <div class="d-flex justify-content-between">
+                                        <input type="hidden" name="goods_id" value="{{ goods.id }}">
+                                        <div class="d-flex quantity-box">
+                                            <input type="hidden" name="max_n_goods" value="{{ goods.amount }}">
+                                            <input type="button" class="quantity-controls quantity-minus" value="-">
+                                            <input type="text" class="quantity-input" name="amount" value=1>
+                                            <input type="button" class="quantity-controls quantity-plus" value="+">
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Купить</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="d-flex flex-row mt-4">
+                                {% if current_user.is_authenticated and current_user.is_admin %}
+                                    <span class="me-auto">Изменить товар</span>
+                                    <a href="{{ url_for('goods_add_page', goods_id=goods.id) }}"
+                                       class="btn btn-warning">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a href="{{ url_for('delete_goods', goods_id=goods.id) }}"
+                                       class="btn btn-danger ms-2">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="mt-4 mb-4 p-2 border">
+            <p class="text-dark">Показано {{ goods_items.items|length }} из {{ goods_items.total }} товаров</p>
+            {% for page_num in goods_items.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if goods_items.page == page_num %}
+                        <a href="{{ url_for('index_page', page=page_num) }}"
+                           class="btn btn-dark ms-2">
+                            {{ page_num }}
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('index_page', page=page_num) }}"
+                           class="btn btn-outline-dark mt-4 mb-4 ms-2">
+                            {{ page_num }}
+                        </a>
+                    {% endif %}
+                {% else %}
+                    ...
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <!-- /.container -->
+
+{% endblock %}

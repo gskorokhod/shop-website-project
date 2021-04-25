@@ -1,0 +1,118 @@
+{% extends 'main_template.html' %}
+{% block content %}
+    <link rel="stylesheet"
+          href="{{ url_for('static',
+           filename='lib/datepicker/css/bootstrap-datepicker3.css') }}">
+
+    <div class="container p-3">
+        <h2 class="mb-4">Оформить заказ</h2>
+        <form action="" class="" method="post" novalidate>
+            <div>
+                {{ form.csrf_token }}
+            </div>
+            <div class="content-section rounded shadow-sm p-3">
+                <fieldset class="form-group">
+                    <legend class="border-bottom border-secondary pb-2">Адрес для доставки заказа</legend>
+                    <div class="form-group pt-4">
+                        {% for field in form if field.name not in ['csrf_token', 'submit',
+                         'description', 'delivery_date'] %}
+                            <div class="row mb-3">
+                                {{ field.label(class="col-sm-2 col-form-label text-18") }}
+                                <div class="col-sm-10">
+                                    <div class="invalid-feedback">
+                                        {% for error in field.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {{ field(class="form-control form-control-lg") }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            </div>
+            <div class="content-section rounded shadow-sm p-3 mt-4">
+                <fieldset class="form-group">
+                    <legend class="border-bottom border-secondary pb-2">Дополнительная информация</legend>
+                    <div class="form-group pt-4">
+                        {{ form.description.label(class="form-control-label text-18 pb-2") }}
+
+                        {% if form.description.errors %}
+                            {{ form.description(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.description.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.description(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group pt-4">
+                        {{ form.delivery_date.label(class="form-control-label text-18 pb-2") }}
+
+                        {% if form.delivery_date.errors %}
+                            {{ form.delivery_date(class="form-control form-control-lg is-invalid datepicker") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.delivery_date.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.delivery_date(class="form-control form-control-lg datepicker") }}
+                        {% endif %}
+                    </div>
+                </fieldset>
+            </div>
+            <div class="content-section rounded shadow-sm p-3 mt-4">
+                <fieldset class="form-group">
+                    <legend class="border-bottom border-secondary pb-2">Состав заказа</legend>
+                    <div class="pt-4">
+                        <table class="table align-middle table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Товар</th>
+                                <th scope="col">Цена (1 шт)</th>
+                                <th scope="col">Кол-во</th>
+                                <th scope="col">Цена</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in cart_items %}
+                                {% set goods = item['goods'] %}
+                                {% set amount = item['amount'] %}
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>{{ goods.name }}</td>
+                                    <td>{{ goods.price }}</td>
+                                    <td>{{ amount }}</td>
+                                    <td>{{ amount * goods.price }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <p class="text-20 mt-2">
+                            <span class="me-2">Итого:</span> {{ price }} <i class="fa fa-rouble"></i>
+                        </p>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-group mt-4 mb-4">
+                {{ form.submit(class="btn btn-success btn-lg") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='lib/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ url_for('static',
+     filename='lib/datepicker/locales/bootstrap-datepicker.ru.min.js') }}"
+            charset="UTF-8"></script>
+    <script>
+        $('.datepicker').datepicker({
+            language: 'ru',
+            format: 'yyyy-mm-dd'
+        });
+    </script>
+{% endblock %}

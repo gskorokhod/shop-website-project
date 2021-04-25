@@ -1,0 +1,292 @@
+{% extends "main_template.html" %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/review_section16.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/goods_page8.css') }}">
+
+    <nav aria-label="breadcrumb" class="">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index_page') }}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('categories_page') }}">Каталог</a></li>
+            {% if from_category %}
+                <li class="breadcrumb-item"><a
+                        href="{{ url_for('goods_in_category', categ_id=from_category.id) }}">{{ from_category.name }}</a>
+                </li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ goods.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="container p-3 ms-2 me-2 mt-4" id="container-main">
+        <div class="shadow-sm rounded p-3 goods-main-section mb-4">
+            {% if current_user.is_authenticated and current_user.is_admin %}
+                <a href="{{ url_for('goods_add_page', goods_id=goods.id) }}"
+                   class="btn btn-warning ms-auto pull-right">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <a href="{{ url_for('delete_goods', goods_id=goods.id) }}"
+                   class="btn btn-danger ms-auto pull-right me-4">
+                    <i class="fa fa-trash"></i>
+                </a>
+            {% endif %}
+            <div class="row p-3">
+                <h1>Товар: {{ goods.name }}</h1>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 justify-content-between ms-2 me-2">
+                <div class="col flex-fill">
+                    <img src="{{ url_for('static', filename=goods.img_file_path) }}"
+                         alt="goods image"
+                         class="img-fluid mb-4 mb-md-2">
+                </div>
+                <div class="col-md-6 col-lg-5 col-xl-4">
+                    <div class="border border-secondary rounded p-2">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Цена
+                                <span class="badge bg-secondary characteristics-value">
+                                    {{ goods.price }} <i class="fa fa-rouble"></i>
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                На складе:
+                                <span class="badge bg-secondary characteristics-value">
+                                    {{ goods.amount }}
+                                </span>
+                            </li>
+                            <li class="d-none"></li>
+                        </ul>
+                        <div class="mt-3 p-2">
+                            <form class="goods-buy-form">
+                                <div class="d-flex justify-content-between">
+                                    <input type="hidden" name="goods_id" value="{{ goods.id }}">
+                                    <div class="d-flex quantity-box">
+                                        <input type="hidden" name="max_n_goods" value="{{ goods.amount }}">
+                                        <input type="button" class="quantity-controls quantity-minus" value="-">
+                                        <input type="text" class="quantity-input" name="amount" value=1>
+                                        <input type="button" class="quantity-controls quantity-plus" value="+">
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn_buy">Купить</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row mt-3 p-3 pb-0 goods-buy-footer">
+                            <a href="#" class="btn btn-outline-secondary">К сравнению</a>
+                            <a href="#" class="btn btn-outline-danger mt-2">В избранное</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active bg-success text-light" id="nav-description-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#nav-description"
+                                type="button" role="tab" aria-controls="nav-description" aria-selected="true">О Товаре
+                        </button>
+                        <button class="nav-link" id="nav-characteristics-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-characteristics"
+                                type="button" role="tab" aria-controls="nav-characteristics" aria-selected="false">
+                            Характеристики
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-description" role="tabpanel"
+                         aria-labelledby="nav-description-tab">
+                        <div class="p-3 goods-description">
+                            <p>{{ goods.description }}</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-characteristics" role="tabpanel"
+                         aria-labelledby="nav-characteristics-tab">
+                        <div class="p-3 goods-description">
+                            <ul class="list-group">
+                                {% for ch in goods.characteristics %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {{ ch.type.name }}
+                                        <span class="badge bg-success characteristics-value">
+                                            {{ ch.value }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- /Comment section -->
+
+        <div class="bg-white rounded shadow-sm p-4 mb-4 clearfix graph-star-rating">
+
+            <div class="row p-1 mb-2">
+                <h4>Отзывы</h4>
+            </div>
+
+            <div class="graph-star-rating-header">
+                <div class="star-rating">
+                    {% set rating = goods.get_rating().get_avg() %}
+                    {% set int_rating = rating|int %}
+
+                    {% for i in range(int_rating) %}
+                        <span><i class="fa fa-star text-success"></i></span>
+                    {% endfor %}
+                    {% if int_rating < 5 %}
+                        <span><i class="fa fa-star-half-full text-success"></i></span>
+                    {% endif %}
+                    {% for i in range(4 - int_rating) %}
+                        <span><i class="fa fa-star-o text-success"></i></span>
+                    {% endfor %}
+                </div>
+                <p class="mb-4 mt-2 review-content">Рейтинг товара: {{ rating }} из 5</p>
+            </div>
+
+            <div class="mt-4 mb-4 p-2">
+                <div class="graph-star-rating-body">
+                    {% for i in range(5, 0, -1) %}
+                        {% set percent = (goods.get_rating().get_percent_with(i))|int %}
+                        <div class="rating-list">
+                            <div class="rating-list-left review-content">
+                                <span class="stars-number">{{ i }}</span>
+                            </div>
+                            <div class="rating-list-center">
+                                <div class="progress">
+                                    <div style="width: {{ percent }}%" aria-valuemax="5" aria-valuemin="0"
+                                         aria-valuenow="5"
+                                         role="progressbar" class="progress-bar bg-success"><span
+                                            class="sr-only"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rating-list-right review-content">
+                                {{ percent }}%
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="text-center mt-3 mb-3">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        onclick="window.scrollTo($('#comment-form-section').position())">
+                    Оставить отзыв
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded shadow-sm p-4 mb-4" id="reviews-list-section">
+            <div class="row p-1">
+                <h4>Отзывы покупателей</h4>
+            </div>
+
+            {% for review in reviews.items %}
+                <div class="border border-secondary rounded mt-4 mb-4 pe-4 ps-4 pt-2 pb-2">
+
+                    <div class="d-flex flex-row user pt-3 pb-3">
+                        <img class="rounded-circle"
+                             src="{{ url_for('static', filename=review.user.profile_pic_path) }}"
+                             alt="Profile pic"
+                             width="50"
+                             height="50">
+
+                        <div class="d-flex flex-column ms-3">
+                            <span class="h5">{{ review.user.username }}</span>
+                            <span class="text-muted">{{ time_format_func(review.created_date) }}</span>
+                        </div>
+
+                        <div class="ms-auto">
+                                <span class="star-rating">
+                                    {% for i in range(review.rating) %}
+                                        <span><i class="fa fa-star text-success"></i></span>
+                                    {% endfor %}
+                                    {% for i in range(5 - review.rating) %}
+                                        <span><i class="fa fa-star-o text-success"></i></span>
+                                    {% endfor %}
+                                </span>
+                        </div>
+                    </div>
+
+                    <div class="mt-2 review-content">
+                        <h5>{{ review.title }}</h5>
+                        <p>{{ review.content }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="mt-2 mb-2 p-2 border">
+                <p class="text-dark">Показано {{ reviews.items|length }} из {{ reviews.total }} отзывов</p>
+                {% for page_num in reviews.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if reviews.page == page_num %}
+                            <a href="{{ url_for('goods_one_page', goods_id=goods.id, reviews_page=page_num, scroll_to_reviews=1) }}"
+                               class="btn btn-dark mt-1 mb-1 ms-2">
+                                {{ page_num }}
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('goods_one_page', goods_id=goods.id, reviews_page=page_num, scroll_to_reviews=1) }}"
+                               class="btn btn-outline-dark mt-1 mb-1 ms-2">
+                                {{ page_num }}
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        ...
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bg-white rounded shadow-sm p-4 mb-5" id="comment-form-section">
+            <div class="row">
+                <h4>Вы уже купили этот товар? Оставьте отзыв</h4>
+            </div>
+
+            <div class="mt-4">
+                <form class="comment-form" method="post">
+                    <div class="form-group">
+                        <label class="review-content mb-1">Заголовок</label>
+                        <input type="text" name="review_title" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="review-content mb-1">Комментарий</label>
+                        <textarea name="review_content" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label class="review-content mb-1">Оценка</label>
+                        <div class="form-control border-0">
+                            {% for i in range(1, 6) %}
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="rating" id="inlineRadio{{ i }}"
+                                           value={{ i }}>
+                                    <label class="form-check-label" for="inlineRadio{{ i }}">{{ i }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button class="btn btn-success" type="submit">Опубликовать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if request.args.get('scroll_to_reviews') == '1' %}
+        <script>
+            setTimeout(function () {
+                window.scrollTo($('#reviews-list-section').position());
+            }, 2);
+        </script>
+    {% endif %}
+    <!-- /Comment section -->
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/goods_6.js') }}"></script>
+{% endblock %}
