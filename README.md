@@ -1,4 +1,4 @@
-# yandexLycFinalProject
+# Yandex Lyceum Final Project
 
 This is my final project for the Yandex.Lyceum course. It is a simple shopping web app.
 It includes a database, a flask backend, a REST API for modifying all the data, a user login system, and an HTML / JS / CSS frontend with bootstrap.
