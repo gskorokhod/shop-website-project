@@ -1,7 +1,5 @@
 import uuid
 
-from PIL import Image
-
 from flask import request, render_template, abort, session, jsonify, redirect, url_for, flash
 from sqlalchemy import desc
 from werkzeug.utils import secure_filename
@@ -10,7 +8,7 @@ from data.users import User
 from api_resorces.goods_resources import parse_goods_data
 from tools import paginate, ru_format_str_time
 from data import db_session
-from main import app
+from app import app
 from flask_login import current_user, login_required
 
 from data.goods import Goods, Category, CharacteristicsType

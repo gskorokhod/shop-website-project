@@ -1,11 +1,8 @@
-from datetime import datetime
-
-from flask import request, render_template, abort, session, jsonify, redirect, url_for, flash
-from flask_login import current_user
+from flask import request, render_template, abort, session, redirect, url_for, flash
 
 from data import db_session
 from data.locations import Location
-from main import app
+from app import app
 
 from forms.orders_forms import OrderForm
 

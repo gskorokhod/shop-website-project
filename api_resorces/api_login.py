@@ -6,7 +6,7 @@ from data.users import User
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
-from main import app
+from app import app
 
 
 def api_login():

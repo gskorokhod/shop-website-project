@@ -1,7 +1,7 @@
 from flask import request, render_template, abort, session, jsonify
 
 from data import db_session
-from main import app
+from app import app
 
 from data.goods import Goods
 

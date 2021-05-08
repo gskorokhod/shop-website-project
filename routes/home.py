@@ -2,7 +2,7 @@ from flask import request, render_template
 from data.goods import Goods, Category
 from tools import paginate
 from data import db_session
-from main import app
+from app import app
 
 
 @app.route('/')

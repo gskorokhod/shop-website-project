@@ -5,8 +5,7 @@ from data.users import User
 from flask_restful import Api
 
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+from app import app
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -17,8 +16,6 @@ db_session.global_init("db/shop.db")
 
 from api_resorces import goods_resources, users_resources, \
     api_login, orders_resources, reviews_resorces, categories_resources, characteristics_resources
-
-from routes import home, goods, users, cart, orders
 
 api.add_resource(goods_resources.GoodsListResource, '/api/v1/goods')
 api.add_resource(goods_resources.GoodsResource, '/api/v1/goods/<int:goods_id>')

@@ -18,6 +18,10 @@
     <orderEntry type="library" name="jquery-3.5.1" level="application" />
     <orderEntry type="library" name="jquery-3.6.0" level="application" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="removeUnused" value="true" />
+    <option name="modifyBaseFiles" value="true" />
+  </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
     <option name="TEMPLATE_FOLDERS">

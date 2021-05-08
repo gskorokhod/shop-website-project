@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 
 from data.goods import Category
-from main import app
+from app import app
 from werkzeug.security import generate_password_hash, check_password_hash
 from data import db_session
 from forms.user_forms import RegistrationForm, LoginForm
