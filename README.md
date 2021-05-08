@@ -8,5 +8,8 @@ Please note that there is no integration with a payment system, as this is a lea
 
 You may use, copy and edit all the code however you like.
 
-Written by Georgii Skorohod. gsckorohod@yandex.ru
+Written by Georgii Skorohod. 
+
+gsckorohod@yandex.ru
+
 2021
