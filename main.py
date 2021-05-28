@@ -1,11 +1,15 @@
 from flask import Flask
+from flask_apscheduler import APScheduler
 from data import db_session
 from flask_login import LoginManager
+
+from data.goods import Goods
 from data.users import User
 from flask_restful import Api
 
+from search import search
 
-from app import app
+from app import app, scheduler_daily_job
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -13,6 +17,12 @@ login_manager.init_app(app)
 api = Api(app)
 
 db_session.global_init("db/shop.db")
+
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
+MAIN_DAILY_TASK_ID = 'MAIN_DAILY_TASK_ID'
 
 from api_resorces import goods_resources, users_resources, \
     api_login, orders_resources, reviews_resorces, categories_resources, characteristics_resources
@@ -30,6 +40,8 @@ api.add_resource(categories_resources.CategoriesResource, '/api/v1/categories/<i
 api.add_resource(characteristics_resources.CharacteristicsTypeListResource, '/api/v1/characteristics')
 api.add_resource(characteristics_resources.CharacteristicsTypeResource, '/api/v1/characteristics/<int:ch_id>')
 
+scheduler.add_job(id=MAIN_DAILY_TASK_ID, func=scheduler_daily_job, trigger='cron', hour=0, minute=0, second=0)
+
 
 @app.route('/api/v1/login')
 def api_login_handle():
@@ -44,7 +56,16 @@ def load_user(user_id):
     return user
 
 
+def index_all_goods():
+    db_sess = db_session.create_session()
+    goods = db_sess.query(Goods).all()
+    for g in goods:
+        search.index_goods(g)
+    db_sess.close()
+
+
 def main():
+    index_all_goods()
     app.run()
 
 

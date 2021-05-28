@@ -162,7 +162,7 @@
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </td>
-                                    <input type="hidden" name="characteristic[]" value="{{char_item.type.id}}#{{char_item.value}}">
+                                    <input type="hidden" name="characteristic[]" value="{{char_item.type.id}}#{{char_item.value}}#{{ char_item.name }}">
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -175,10 +175,16 @@
                                 <div class="mb-3">
                                     <label for="charTypeSelect" class="form-label">Выберите характеристику</label>
                                     <select id="charTypeSelect" name="charType" class="form-select">
+                                    <option value="">--None--</option>
                                         {% for char_type in char_types %}
                                             <option value="{{ char_type.id }}">{{ char_type.name }}</option>
                                         {% endfor %}
                                     </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newCharTypeInput" class="form-label">Или введите название новой хар-ки:</label>
+                                    <input type="text" name="newCharType" id="newCharTypeInput" class="form-control"
+                                           placeholder="Введите значение">
                                 </div>
                                 <div class="mb-3">
                                     <label for="charValueInput" class="form-label">Введите значение</label>
@@ -200,5 +206,5 @@
     </div>
 {% endblock content %}
 {% block scripts %}
-    <script src="{{ url_for('static', filename='js/add_goods_v2.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/add_goods_v2_016.js') }}"></script>
 {% endblock %}

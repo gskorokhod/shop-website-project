@@ -9,6 +9,55 @@
     <div class="container mt-2">
         <h2 class="mb-4 text-center">Каталог</h2>
         <div class="container content-section p-0 rounded">
+
+            <!-- Button trigger modal -->
+            <div class="row ps-4 pe-4 pt-2 mb-2">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="fa fa-plus"></i> Добавить категорию
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Добавить категорию</h5>
+                                <button type="button" class="btn-close" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal" aria-label="Close">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form role="form" method="POST" action="">
+                                    <div class="form-group">
+                                        <label for="categ_name_input" class="control-label">Название</label>
+                                        <input type="text" class="form-control input-lg" name="categ_name"
+                                               id="categ_name_input" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categ_select_parent">Родительский элемент</label>
+                                        <select class="form-control form-select" id="categ_select_parent"
+                                                name="categ_parent">
+                                            <option value="">-- None --</option>
+                                            {% for categ in all_categories %}
+                                                <option value="{{ categ.id }}">{{ categ.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mt-4">
+                                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal">Отмена
+                                        </button>
+                                        <button type="submit" class="btn btn-success pull-right w-50">Сохранить</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row pe-4 ps-4 pt-2 pb-3">
                 <a href="{{ url_for('all_goods_page') }}" class="category-link-btn rounded
                          flex-fill text-left
@@ -16,7 +65,8 @@
                     <span class="h4">Все товары</span>
                 </a>
             </div>
-            <div class="accordion" id="accordionExample">
+
+            <div class="accordion border-0" id="accordionExample">
                 {% for categ in categories %}
                     <div class="accordion-item">
                         <div class="accordion-header d-flex flex-row justify-content-between p-2"
@@ -26,6 +76,13 @@
                      text-decoration-none text-dark pt-2 ps-2">
                                 <span class="h4">{{ categ.name }}</span>
                             </a>
+
+                            {% if current_user.is_authenticated and current_user.is_admin %}
+                                <a class="btn btn-danger ms-4" href="{{ url_for('delete_categ', categ_id=categ.id) }}">
+                                    <i class="fa fa-trash fa-2x d-block"></i>
+                                </a>
+                            {% endif %}
+
                             <button class="btn btn-success ms-4 collapse-toggle" type="button"
                                     data-bs-toggle="collapse"
                                     data-bs-target="#collapse{{ loop.index }}">
@@ -36,12 +93,19 @@
                              data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <ul class="list-group list-group-flush">
-                                    {% for subcategory in categ.children %}
-                                        <li class="list-group-item d-flex flex-row category-link-btn rounded">
+                                    {% for subcategory in categ.get_all_children() %}
+                                        <li class="list-group-item d-flex flex-row category-link-btn">
                                             <a href="{{ url_for('goods_in_category', categ_id=subcategory.id) }}"
                                                class="flex-fill text-decoration-none text-dark">
                                                 <span style="font-size: 20px">{{ subcategory.name }}</span>
                                             </a>
+
+                                            {% if current_user.is_authenticated and current_user.is_admin %}
+                                                <a class="btn btn-danger ms-4"
+                                                   href="{{ url_for('delete_categ', categ_id=subcategory.id) }}">
+                                                    <i class="fa fa-trash d-block"></i>
+                                                </a>
+                                            {% endif %}
                                         </li>
                                     {% endfor %}
                                 </ul>

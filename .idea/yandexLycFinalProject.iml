@@ -17,6 +17,7 @@
     <orderEntry type="library" name="jquery-3.5.1.slim" level="application" />
     <orderEntry type="library" name="jquery-3.5.1" level="application" />
     <orderEntry type="library" name="jquery-3.6.0" level="application" />
+    <orderEntry type="library" name="227d262792" level="application" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="removeUnused" value="true" />

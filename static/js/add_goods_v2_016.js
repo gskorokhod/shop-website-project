@@ -31,7 +31,20 @@ $(document).ready(function () {
         let form = $(this).closest('.characteristics-form');
         let name_input = form.find('select[name="charType"]');
         let char_id = name_input.val();
-        let char = name_input.find('option:selected').text();
+
+        if (char_id === "") {
+            char_id = null;
+        }
+
+        let charact = name_input.find('option:selected').text();
+
+        let ch_name = '';
+        if (char_id === null) {
+            ch_name = form.find('input[name="newCharType"]').val();
+            charact = ch_name;
+        } else {
+            ch_name = charact;
+        }
 
         let val_input = form.find('input[name="charValue"]');
         let value = val_input.val();
@@ -39,15 +52,18 @@ $(document).ready(function () {
         let table = $(this).closest('.characteristics-section').find('.characteristics-table');
         let tbody = table.find('tbody')
 
+        let in_string = char_id + "#" + value + "#" + ch_name;
+        console.log(in_string);
+
         tbody.append("<tr>\n" +
-"                       <td>" + char + "</td>\n" +
+"                       <td>" + ch_name + "</td>\n" +
 "                       <td>" + value + "</td>\n" +
 "                       <td class=\"text-center\">\n" +
 "                           <button type=\"button\" class=\"btn btn-outline-danger item-list-delete\">\n" +
 "                               <i class=\"fa fa-trash\"></i>\n" +
 "                           </button>\n" +
 "                       </td>\n" +
-"                       <input type=\"hidden\" name=\"characteristic[]\" value=" + char_id + "#" + value + ">\n" +
+"                       <input type=\"hidden\" name=\"characteristic[]\" value=\"" + in_string + "\">\n" +
 "                     </tr>");
     });
 })

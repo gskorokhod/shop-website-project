@@ -95,6 +95,7 @@ def checkout_page():
             status = Status(name='processing',
                             full_name='Заказ принят',
                             description='Мы приняли Ваш заказ. Сейчас он находится в обработке.')
+            db_sess.add(status)
 
         description = order_form.description.data
         if not description:
@@ -126,6 +127,7 @@ def checkout_page():
             )
 
             goods.amount -= amount
+            goods.times_bought += 1
             order.elements.append(elem)
 
         db_sess.add(order)

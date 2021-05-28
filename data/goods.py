@@ -63,6 +63,15 @@ class Category(SqlAlchemyBase, SerializerMixin):
 
     name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
 
+    def get_all_children(self):
+        ans = []
+
+        for child in self.children:
+            ans.append(child)
+            ans += child.get_all_children()
+
+        return ans
+
 
 class Goods(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'goods'
@@ -85,6 +94,12 @@ class Goods(SqlAlchemyBase, SerializerMixin):
     price = sqlalchemy.Column(sqlalchemy.Integer, default=0, nullable=False)
 
     gives_bonus_points = sqlalchemy.Column(sqlalchemy.Integer, default=0, nullable=True)
+
+    times_bought = sqlalchemy.Column(sqlalchemy.Integer, default=0, nullable=False)
+
+    is_visible = sqlalchemy.Column(sqlalchemy.Boolean, default=True, nullable=False)
+
+    is_flagged_to_delete = sqlalchemy.Column(sqlalchemy.Boolean, default=False, nullable=False)
 
     categories = orm.relation('Category',
                               secondary='goods_to_category',

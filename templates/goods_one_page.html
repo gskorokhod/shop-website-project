@@ -18,16 +18,70 @@
     </nav>
 
     <div class="container p-3 ms-2 me-2 mt-4" id="container-main">
+
+        {% if current_user.is_authenticated %}
+            {% if current_user.is_admin %}
+                {% if goods.is_flagged_to_delete %}
+                    <div class="shadow-sm rounded p-3 goods-main-section mb-4">
+                        <p class="text-danger">
+                            Данный товар отмечен для удаления.
+                            После того, как все заказы на него закроются, он будет автоматически удалён из БД.
+                            Проверка происходит каждый день в 00:00.<br>
+                            Вы можете <a
+                                href="{{ url_for('set_goods_delete_flag', goods_id=goods.id, is_delete=0, next=request.path) }}">отменить
+                            это действие</a>
+                        </p>
+                    </div>
+                {% endif %}
+
+                {% if not goods.is_visible %}
+                    <div class="shadow-sm rounded p-3 goods-main-section mb-4">
+                        <p class="text-danger">
+                            Данный снят с продажи. Он не показывается пользователям на сайте.
+                            Товар по-прежнему есть в БД. На уже оформленные заказы это не повлияет.
+                            Если доставка этого товара невозможна, пожалуйста, свяжитесь с пользователями, разместившими
+                            их.<br>
+                            Вы можете <a
+                                href="{{ url_for('set_goods_hidden', goods_id=goods.id, is_hidden=0, next=request.path) }}">отменить
+                            это действие</a>
+                        </p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
         <div class="shadow-sm rounded p-3 goods-main-section mb-4">
             {% if current_user.is_authenticated and current_user.is_admin %}
-                <a href="{{ url_for('goods_add_page', goods_id=goods.id) }}"
-                   class="btn btn-warning ms-auto pull-right">
-                    <i class="fa fa-edit"></i>
-                </a>
-                <a href="{{ url_for('delete_goods', goods_id=goods.id) }}"
-                   class="btn btn-danger ms-auto pull-right me-4">
-                    <i class="fa fa-trash"></i>
-                </a>
+                <div class="d-flex flex-row">
+                    <a href="{{ url_for('goods_add_page', goods_id=goods.id) }}"
+                       class="btn btn-warning">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    {% if goods.is_visible %}
+                        <a href="{{ url_for('set_goods_hidden', goods_id=goods.id, is_hidden=1, next=request.path) }}"
+                           class="btn btn-danger ms-2">
+                            <i class="fa fa-eye-slash"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('set_goods_hidden', goods_id=goods.id, is_hidden=0, next=request.path) }}"
+                           class="btn btn-success ms-2">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    {% endif %}
+
+                    {% if goods.is_flagged_to_delete %}
+                        <a href="{{ url_for('set_goods_delete_flag', goods_id=goods.id, is_delete=0, next=request.path) }}"
+                           class="btn btn-danger ms-auto">
+                            <i class="fa fa-trash"></i> Отменить удаление
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('set_goods_delete_flag', goods_id=goods.id, is_delete=1, next=request.path) }}"
+                           class="btn btn-outline-danger ms-auto">
+                            <i class="fa fa-trash"></i> Удалить товар
+                        </a>
+                    {% endif %}
+                </div>
             {% endif %}
             <div class="row p-3">
                 <h1>Товар: {{ goods.name }}</h1>

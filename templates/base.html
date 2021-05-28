@@ -11,7 +11,7 @@
           integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/227d262792.js" crossorigin="anonymous"></script>
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main_stylesheet_v12.css') }}">
@@ -49,8 +49,8 @@
     </nav>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <div class="container-fluid">
-            <form class="d-flex me-5">
-                <input class="form-control me-2" type="search" placeholder="Поиск по сайту" aria-label="Search">
+            <form class="d-flex me-5" action="{{ url_for('search_goods_page') }}" method="get">
+                <input class="form-control me-2" type="text" name="query" placeholder="Поиск по сайту" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit"><i class="fa fa-search"></i></button>
             </form>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"

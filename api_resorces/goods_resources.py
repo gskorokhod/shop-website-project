@@ -27,8 +27,15 @@ def parse_characteristics(args, goods, session):
     all_chars = []
     if args.get('characteristics', None) is not None:
         for ch_item in args['characteristics']:
-            ch_id, ch_value = str(ch_item).split('#')
-            ch_id = int(ch_id)
+            ch_id, ch_value, ch_name = str(ch_item).split('#')
+
+            if ch_id.lower() == 'null':
+                new_ch_type = CharacteristicsType(name=ch_name)
+                session.add(new_ch_type)
+                session.commit()
+                ch_id = new_ch_type.id
+            else:
+                ch_id = int(ch_id)
 
             if ch_id not in all_chars:
                 ch_type = session.query(CharacteristicsType).get(ch_id)
