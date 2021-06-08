@@ -93,6 +93,7 @@ def cart_list_api():
 def cart_one_api(item):
     if 'cart' in session.keys():
         item_ind = int(item)
+        print(session['cart'])
 
         if item_ind not in range(0, len(session['cart'])):
             abort(404)
@@ -110,3 +111,7 @@ def cart_one_api(item):
             del session['cart'][item_ind]
             session.modified = True
             return jsonify({'success': 'OK'})
+
+        print(session['cart'])
+    else:
+        print('Something wrong with session')

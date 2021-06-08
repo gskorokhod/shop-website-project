@@ -11,6 +11,7 @@
         <div class="container content-section p-0 rounded">
 
             <!-- Button trigger modal -->
+            {% if current_user.is_authenticated and current_user.is_admin %}
             <div class="row ps-4 pe-4 pt-2 mb-2">
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     <i class="fa fa-plus"></i> Добавить категорию
@@ -57,6 +58,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
 
             <div class="row pe-4 ps-4 pt-2 pb-3">
                 <a href="{{ url_for('all_goods_page') }}" class="category-link-btn rounded

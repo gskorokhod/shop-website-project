@@ -273,10 +273,11 @@ def goods_in_category(categ_id):
     db_sess = db_session.create_session()
     category = db_sess.query(Category).get(categ_id)
     categories = db_sess.query(Category).filter_by(parent_id=None)
-    query = db_sess.query(Goods).join(Goods.categories).filter(Category.id == categ_id)
 
+    query = db_sess.query(Goods)
     if show_only_visible:
         query = query.filter_by(is_visible=True)
+    query = query.join(Goods.categories).filter(Category.id == categ_id)
 
     goods = paginate(query, page, 6)
 
